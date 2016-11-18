@@ -1,78 +1,49 @@
 'use strict';
 
-const User = require('../models').models.User;
-const atob = require('atob');
+const passport = require('koa-passport');
+const uuid = require('uuid');
 const bcrypt = require('bcrypt');
-//const uuid = require('uuid');
+
+const User = require('../models').models.User;
+
+const SALT_ROUNDS = 10;
 
 exports.login = function* (next) {
-  this.type = 'json';
-  try {
-    let auth = this.request.header.authorization.split(' ');
-    if (auth[0]==='Basic') {
-      auth = atob(auth[1]).split(':');
-      const user = yield User.findOne({username: auth[0]});
-      if (user === undefined || user.username === undefined) {
-        // User doesnt exist
-        throw new Error ('Wrong user or password.');
-      } else {
-        // user exists, let's check the password
-        let passOK = yield checkPass(auth[1], user.hash);
-        if (passOK) {
-          this.status = 200;
-          this.body = {
-            status: 'Authorized',
-            token: user.token,
-            username: user.username
-          };
-        } else {
-          throw new Error ('Wrong user or password.');
-        }
-      }
-      this.body = user;
-    } else {
-      throw new Error('No authentification header.')
+  let ctx = this;
+  yield passport.authenticate('basic', { session: false },
+  function *(error,user) {
+    if (user) {
+      ctx.status = 200;
+      yield ctx.body = { id: user._id, username: user.username, auth_token: user.token };
     }
-  } catch (err) {
-    this.status = 401;
-    this.body = err;
-  }
+    else {
+      ctx.status = 401;
+      ctx.body = { error: 'Wrong user or password.' };
+    }
+  });
 };
 
-const checkPass = function(pass, hash) {
-  return new Promise(function(resolve,reject) {
-    bcrypt.compare(pass, hash, function (err, res) {
-      if (err) {
-        reject(err);
-      }
-      else if (res) {
-        resolve(true);
-      } else {
-        resolve(false);
-      }
-    });
-  });
-}
-
 exports.createUser = function* (next) {
-  this.type = 'json';
-  // if (
-  //   this.request.body === undefined ||
-  //   this.request.body.title === undefined ||
-  //   this.request.body.date === undefined ||
-  //   this.request.body.venue === undefined
-  // ) {
-  //   this.status = 400;
-  //   this.body = '400 Bad Request';
-  // } else {
-  //   let data = { title: this.request.body.title, date: this.request.body.date, venue: this.request.body.venue };
-  //   var event = new Event(data);
-  //   try {
-  //     yield event.save();
-  //     this.body = data;
-  //   } catch (err) {
-  //     this.status = 500;
-  //     this.body = err;
-  //   }
-  // }
+  if (
+    this.request.body === undefined ||
+    this.request.body.username === undefined ||
+    this.request.body.password === undefined
+  ) {
+    this.status = 400;
+    this.body = '400 Bad Request';
+  } else {
+    let newToken = uuid.v4();
+    let hashedPass = bcrypt.hashSync(this.request.body.password, SALT_ROUNDS);
+    let user = { username: this.request.body.username, hash: hashedPass, token: newToken };
+    user = new User(user);
+    try {
+      let res = yield user.save();
+      this.status = 200;
+      this.body = {id: res._id, username: res.username, auth_token: res.token};
+    } catch (err) {
+      this.status = 500;
+      if (err.errmsg && err.errmsg.indexOf('duplicate key error index')!==-1) err = {error: 'Username is already used.'};
+      this.body = err;
+    }
+  }
 };
