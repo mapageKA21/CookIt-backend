@@ -47,3 +47,18 @@ exports.createUser = function* (next) {
     }
   }
 };
+
+exports.checkUser = function* (next) {
+  let ctx = this;
+  yield passport.authenticate('bearer', { session: false },
+  function *(error,user) {
+    if (user) {
+      ctx.status = 200;
+      yield ctx.body = { id: user._id, username: user.username, auth_token: user.token };
+    }
+    else {
+      ctx.status = 401;
+      ctx.body = { error: 'Wrong token.' };
+    }
+  });
+};

@@ -5,6 +5,7 @@ const bodyParser = require('koa-bodyparser');
 const cors = require('koa-cors');
 const passport = require('koa-passport');
 const BasicStrategy = require('passport-http').BasicStrategy;
+const BearerStrategy = require('passport-http-bearer').Strategy;
 const bcrypt = require('bcrypt');
 
 const config = require('./config.json');
@@ -18,13 +19,13 @@ app.use(cors());
 app.use(bodyParser());
 app.use(router.routes());
 
-passport.serializeUser(function(user, done) {
-  done(null, user._id)
-});
-
-passport.deserializeUser(function(id, done) {
-  User.findById(id, done);
-});
+// passport.serializeUser(function(user, done) {
+//   done(null, user._id)
+// });
+//
+// passport.deserializeUser(function(id, done) {
+//   User.findById(id, done);
+// });
 
 passport.use(new BasicStrategy(
   function(userid, password, done) {
@@ -33,6 +34,18 @@ passport.use(new BasicStrategy(
       if (!user) { return done(null, false); }
       if (!bcrypt.compareSync(password,user.hash)) { return done(null, false); }
       return done(null, user);
+    });
+  }
+));
+
+passport.use(new BearerStrategy(
+  function(token, done) {
+    console.log(token);
+    User.findOne({ token: token }, function (err, user) {
+      console.log(user);
+      if (err) { return done(err); }
+      if (!user) { return done(null, false); }
+      return done(null, user, { scope: 'all' });
     });
   }
 ));

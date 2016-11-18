@@ -7,8 +7,6 @@ const usersCtrl   = require('./controllers/users.js');
 
 router.get('/sign-in', usersCtrl.login);
 router.post('/users', usersCtrl.createUser);
-
-// router.get('/panels', authMiddleware, panelsCtrl.getPanels);
-// router.post('/panels', authMiddleware, panelsCtrl.createMockPanel);
+router.get('/me',usersCtrl.checkUser);
 
 module.exports = router;

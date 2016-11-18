@@ -27,6 +27,7 @@
     "koa-router": "^5.4.0",
     "mongoose": "^4.6.8",
     "passport-http": "^0.3.0",
+    "passport-http-bearer": "^1.0.1",
     "uuid": "^2.0.3"
   },
   "devDependencies": {
