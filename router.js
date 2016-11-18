@@ -8,5 +8,6 @@ const usersCtrl   = require('./controllers/users.js');
 router.get('/sign-in', usersCtrl.login);
 router.post('/users', usersCtrl.createUser);
 router.get('/me',usersCtrl.checkUser);
+router.del('/me',usersCtrl.delUser);
 
 module.exports = router;

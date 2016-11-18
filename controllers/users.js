@@ -62,3 +62,20 @@ exports.checkUser = function* (next) {
     }
   });
 };
+
+
+exports.delUser = function* (next) {
+  let ctx = this;
+  yield passport.authenticate('bearer', { session: false },
+  function *(error,user) {
+    if (user) {
+      yield user.remove();
+      ctx.status = 200;
+      ctx.body = { status: 'User deleted' };
+    }
+    else {
+      ctx.status = 401;
+      ctx.body = { error: 'Wrong token.' };
+    }
+  });
+};
