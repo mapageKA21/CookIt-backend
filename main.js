@@ -40,9 +40,7 @@ passport.use(new BasicStrategy(
 
 passport.use(new BearerStrategy(
   function(token, done) {
-    console.log(token);
     User.findOne({ token: token }, function (err, user) {
-      console.log(user);
       if (err) { return done(err); }
       if (!user) { return done(null, false); }
       return done(null, user, { scope: 'all' });
