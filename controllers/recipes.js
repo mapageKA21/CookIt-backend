@@ -28,7 +28,7 @@ exports.getSpecificRecipe = function* (next) {
 		const recipe = yield Recipe.findOne({_id: id});
 			this.status = 200;
 	    this.body = {
-	    	recipes: recipe
+	    	recipe: recipe
 	    };
 	} catch (err) {
 		console.log('recipe not found');
