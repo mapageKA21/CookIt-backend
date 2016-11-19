@@ -4,7 +4,6 @@ const mongoose = require('mongoose');
 const relationship = require('mongoose-relationship');
 
 const recipeSchema = new mongoose.Schema ({
-  // id: mongoose.Schema.ObjectId,
   name: String,
   image_url: String,
   categories: [{type: mongoose.Schema.ObjectId, ref: 'Category', childPath: 'recipes'}],

@@ -17,7 +17,7 @@ exports.getCategories = function* (next) {
 };
 
 exports.getSpecificCategory = function* (next) {
-	// let pasta = new Category({name:"pasta", recipes:["5830404a700b3079c8d2a154"]});
+	// let pasta = new Category({name:"pasta"});
 	// pasta.save();
   this.type = 'json';
 	try {

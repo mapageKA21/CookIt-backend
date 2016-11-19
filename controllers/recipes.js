@@ -41,12 +41,10 @@ exports.getSpecificRecipe = function* (next) {
 };
 
 exports.postRecipe = function* (next) {
-  //works with just one category
   const that = this.request.body;
   const categoriesArr = this.request.body.categories;
-  const oneCat = this.request.body.categories;
   this.type = 'json';
-  let padre = yield Category.findOne({_id: oneCat})
+  
   try {
     let recipe = new Recipe ({
       name: that.name,
@@ -62,7 +60,12 @@ exports.postRecipe = function* (next) {
       time: that.time,
       cost: that.cost
     });
-    recipe.categories.push(padre)
+
+    for (var i = 0; i < categoriesArr.length; i++) {
+      let padre = yield Category.findOne({_id: categoriesArr[i]})
+      padre.recipes.push(recipe)
+    }
+
     yield recipe.save();
       this.status = 200;
       this.body = {
