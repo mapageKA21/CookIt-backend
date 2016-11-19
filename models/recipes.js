@@ -1,11 +1,13 @@
 'use strict';
 
 const mongoose = require('mongoose');
+const relationship = require('mongoose-relationship');
 
-const recipeSchema = {
+const recipeSchema = new mongoose.Schema ({
+  // id: mongoose.Schema.ObjectId,
   name: String,
   image_url: String,
-  category: [{type: mongoose.Schema.ObjectId, ref: 'categories'}],
+  categories: [{type: mongoose.Schema.ObjectId, ref: 'Category', childPath: 'recipes'}],
   ingredients: [{name: String, quantity: Number, unit: Number}],
   kit: [String],
   preparation: String,
@@ -15,6 +17,7 @@ const recipeSchema = {
   difficulty: Number,
   time: Number,
   cost: Number
-}
+});
 
+recipeSchema.plugin(relationship, {relationshipPathName:'categories'});
 module.exports = mongoose.model('Recipe', recipeSchema);

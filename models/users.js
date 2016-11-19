@@ -2,7 +2,7 @@
 
 const mongoose = require('mongoose');
 
-const eventSchema = mongoose.Schema({
+const eventSchema = new mongoose.Schema({
     "username": { type : String, index: { unique: true }},
     "email": { type : String, index: { unique: true }},
     "hash": { type : String},

@@ -22,9 +22,4 @@ router.get('/search/:id', searchCtrl.getSearchRecipes);
 router.get('/categories', categoriesCtrl.getCategories);
 router.get('/categories/:id', categoriesCtrl.getSpecificCategory);
 
-
-
-// router.get('/panels', authMiddleware, panelsCtrl.getPanels);
-// router.post('/panels', authMiddleware, panelsCtrl.createMockPanel);
-
 module.exports = router;

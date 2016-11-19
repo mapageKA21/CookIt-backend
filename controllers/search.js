@@ -19,4 +19,3 @@ console.log('this params:' + this.params.id);
     this.body = err;
   }
 };
-// {"$in": [this.params.id]}})
