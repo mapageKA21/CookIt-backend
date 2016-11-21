@@ -8,7 +8,7 @@ exports.getRecipes = function* (next) {
   try {
     const recipes = yield Recipe.find()
       .populate('categories');
-    if (recipes.length > 4) {
+    if (recipes.length > 3) {
       this.status = 200;
       this.body = {
         recipes: recipes
@@ -17,7 +17,6 @@ exports.getRecipes = function* (next) {
       console.log(`less than 5 recipes, fetching data...`);
     }
   } catch (err) {
-    console.log(err);
     this.status = 401;
     this.body = err;
   }
@@ -72,7 +71,6 @@ exports.postRecipe = function* (next) {
         recipe
       };
   } catch (err) {
-    console.log(err);
     console.log('recipe not saved');
     this.status = 401;
     this.body = err;
