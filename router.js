@@ -5,12 +5,9 @@ const bodyParser = require('body-parser');
 
 const usersCtrl   = require('./controllers/users.js');
 
-const authMiddleware = require('./auth.js')
-
-router.get('/login', usersCtrl.login);
-router.post('/login', usersCtrl.createUser);
-
-// router.get('/panels', authMiddleware, panelsCtrl.getPanels);
-// router.post('/panels', authMiddleware, panelsCtrl.createMockPanel);
+router.get('/sign-in', usersCtrl.login);
+router.post('/users', usersCtrl.createUser);
+router.get('/me',usersCtrl.checkUser);
+router.del('/me',usersCtrl.delUser);
 
 module.exports = router;
