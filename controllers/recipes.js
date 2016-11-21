@@ -2,13 +2,15 @@
 
 const Recipe = require('../models').models.Recipe;
 const Category = require('../models').models.Category;
+const http = require("http");
+const request = require("request");
 
 exports.getRecipes = function* (next) {
   this.type = 'json';
   try {
     const recipes = yield Recipe.find()
       .populate('categories');
-    if (recipes.length > 3) {
+    if (recipes.length > 4) {
       this.status = 200;
       this.body = {
         recipes: recipes
@@ -76,3 +78,129 @@ exports.postRecipe = function* (next) {
     this.body = err;
   }
 };
+
+
+
+
+
+
+
+
+let getOneIdRecipe = function (category, onResult) {
+  let options = {
+    host: `api.yummly.com`,
+    path: `/v1/api/recipes?_app_id=4ce60515&_app_key=1bf26e0787bf475c706de80ec4b3b50d&q=${category}&requirePictures=true`,
+    method: 'GET',
+    headers: {
+        'Content-Type': 'application/json'
+    }
+  };
+  console.log("rest::getOneIdRecipe");
+
+  let req = http.request(options, function(res)
+  {
+      let output = '';
+      console.log(options.host + ':' + res.statusCode);
+      res.setEncoding('utf8');
+
+      res.on('data', function (chunk) {
+          output += chunk;
+      });
+
+      res.on('end', function() {
+          let obj = JSON.parse(output);
+          onResult(res.statusCode, obj);
+      });
+  });
+
+  req.on('error', function(err) {
+      //res.send('error: ' + err.message);
+  });
+
+  req.end();
+}
+
+let getDetailsRecipe = function (recipeId, onResult) {
+  let options = {
+    host: `api.yummly.com`,
+    path: `/v1/api/recipe/${recipeId}?_app_id=4ce60515&_app_key=1bf26e0787bf475c706de80ec4b3b50d`,
+    method: 'GET',
+    headers: {
+        'Content-Type': 'application/json'
+    }
+  };
+  console.log("rest::getDetailsRecipe");
+
+  let req = http.request(options, function(res)
+  {
+      let output = '';
+      console.log(options.host + ':' + res.statusCode);
+      res.setEncoding('utf8');
+
+      res.on('data', function (chunk) {
+          output += chunk;
+      });
+
+      res.on('end', function() {
+          let obj = JSON.parse(output);
+          onResult(res.statusCode, obj);
+      });
+  });
+
+  req.on('error', function(err) {
+      //res.send('error: ' + err.message);
+  });
+
+  req.end();
+}
+
+// getOneIdRecipe('veal', function(statusCode, result) {
+//   const recipeId = result.matches[3].id;
+//   console.log(`RECIPE ID: ${recipeId}`);
+//   getDetailsRecipe(recipeId, function(statusCode, result) {
+//     console.log(`RECIPE DETAILS:`);
+//     console.log("onResult: (" + statusCode + ")" + JSON.stringify(result));  
+//     const recipeUrl = result.source.sourceRecipeUrl;
+//     console.log(`RECIPE URL:${recipeUrl}`);
+//   })
+//   // I could work with the result html/json here.  I could also just return it
+//   // console.log("onResult: (" + statusCode + ")" + JSON.stringify(result));
+//   // res.statusCode = statusCode;
+//   // res.send(result);
+// });
+
+
+// RECIPE URL:http://allrecipes.com/recipe/20670/veal-oscar/
+
+let getInfoFromUrl = function (url) {
+  let options = {
+    host: `allrecipes.com`,
+    path: `/recipe/20670/veal-oscar/`,
+    method: 'GET',
+    headers: {
+        'Content-Type': 'application/json'
+    }
+  };
+  console.log("rest::getInfoFromUrl");
+
+  let req = http.request(options, function(res) {
+      let output = '';
+      console.log(options.host + ':' + res.statusCode);
+      res.setEncoding('utf8');
+
+      res.on('data', function (chunk) {
+          output += chunk;
+      });
+
+      res.on('end', function() {
+          let obj = JSON.parse(output);
+          onResult(res.statusCode, obj);
+      });
+  });
+
+  req.on('error', function(err) {
+      //res.send('error: ' + err.message);
+  });
+
+  req.end();
+}
