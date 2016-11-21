@@ -83,7 +83,7 @@ exports.postRecipe = function* (next) {
 
 
 
-
+// ADD FUNCTION TO GET ID AND FUNCTION TO GET THE DETAILS
 
 
 let getOneIdRecipe = function (category, onResult) {
