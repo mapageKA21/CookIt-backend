@@ -4,6 +4,8 @@ const http = require("http");
 const request = require("request");
 const scrapeIt = require("scrape-it");
 
+// ADDED SOME SCRAP FUNCTIONS FOR DIFFERENTS SITES
+
 let allRecipes = function (url) {
   scrapeIt(url, {
     instructions: ".directions--section__steps ol"
