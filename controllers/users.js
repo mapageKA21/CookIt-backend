@@ -3,6 +3,7 @@
 const passport = require('koa-passport');
 const uuid = require('uuid');
 const bcrypt = require('bcrypt');
+const parse =  require('co-body');
 
 const User = require('../models').models.User;
 
@@ -24,17 +25,19 @@ exports.login = function* (next) {
 };
 
 exports.createUser = function* (next) {
+
+  let body = yield parse.json(this);
   if (
-    this.request.body === undefined ||
-    this.request.body.username === undefined ||
-    this.request.body.password === undefined
+    body === undefined ||
+    body.username === undefined ||
+    body.password === undefined
   ) {
     this.status = 400;
     this.body = '400 Bad Request';
   } else {
     let newToken = uuid.v4();
-    let hashedPass = bcrypt.hashSync(this.request.body.password, SALT_ROUNDS);
-    let user = { username: this.request.body.username, hash: hashedPass, token: newToken };
+    let hashedPass = bcrypt.hashSync(body.password, SALT_ROUNDS);
+    let user = { username: body.username, hash: hashedPass, token: newToken };
     user = new User(user);
     try {
       let res = yield user.save();
