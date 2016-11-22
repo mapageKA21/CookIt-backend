@@ -4,6 +4,7 @@ const Recipe = require('../models').models.Recipe;
 const axios = require("../lib/axios");
 
 exports.getSuggestions = function* (next) {
+  //  query of 3 ingredients
   this.type = 'json';
   let yummlyRecipes = [];
 
