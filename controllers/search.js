@@ -20,7 +20,7 @@ exports.getSearchRecipes = function* (next) {
         params: { q: `${id}`}
       }).then(function(res) {
         const matches = res.data.hits;
-        for (let i = 0; i < 10; i++) {
+        for (let i = 0; i < matches.length; i++) {
           let newRecipe = {
             id: encodeURIComponent(matches[i].recipe.uri),
             name: matches[i].recipe.label,
