@@ -21,7 +21,7 @@ exports.getRecipes = function* (next) {
         params: { q: 'mediterranean'}
       }).then(function(res) {
         const matches = res.data.hits;
-        for (let i = 0; i < 10; i++) {
+        for (let i = 0; i < matches.length; i++) {
           let newRecipe = {
             id: encodeURIComponent(matches[i].recipe.uri),
             name: matches[i].recipe.label,
@@ -50,7 +50,7 @@ exports.getSpecificRecipe = function* (next) {
       .populate('categories');
     if (recipe._id) {
       this.status = 200;
-      this.body = [recipe];
+      this.body = recipe;
     } else {
       
     }
@@ -71,7 +71,7 @@ exports.getSpecificRecipe = function* (next) {
         return newRecipe;
       });
       this.status = 200;
-      this.body = [recipes];
+      this.body = recipes;
     } else {
       this.status = 401;
       this.body = err;
@@ -116,12 +116,3 @@ exports.postRecipe = function* (next) {
     this.body = err;
   }
 };
-
-
-
-
-
-
-
-
-
