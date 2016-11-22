@@ -3,24 +3,22 @@
 const Recipe = require('../models').models.Recipe;
 const axios = require("../lib/axios");
 
-exports.getSearchRecipes = function* (next) {
+exports.getSuggestions = function* (next) {
+  //  query of 3 ingredients
   this.type = 'json';
-  const id = this.params.id;
   let yummlyRecipes = [];
 
-	try {
-		const recipes = yield Recipe.find({name: new RegExp(id,"i")});
-		if (recipes.length > 0) {
-      this.status = 200;
-      this.body = {
-        recipes: recipes
-      };
-    } else {
+  try {
       let recipes = yield axios.get('/recipes', {
-        params: { q: `${id}`}
+        params: { 
+          q: `*`,
+          allowedIngredient: `${this.query.one}`,
+          allowedIngredient: `${this.query.two}`,
+          allowedIngredient: `${this.query.three}`
+        }
       }).then(function(res) {
         const matches = res.data.matches;
-        for (let i = 0; i < 5; i++) {
+        for (let i = 0; i < 3; i++) {
           let newRecipe = {
             id: matches[i].id,
             name: matches[i].recipeName,
@@ -35,9 +33,10 @@ exports.getSearchRecipes = function* (next) {
       this.body = {
         recipes: recipes
       };
-    }
-	} catch (err) {
-		console.log('no recipes matching search criteria');
+    
+  } catch (err) {
+    console.log('no recipes matching search criteria');
+    console.log(err);
     this.status = 401;
     this.body = err;
   }

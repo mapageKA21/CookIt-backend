@@ -7,9 +7,7 @@ const usersCtrl   = require('./controllers/users.js');
 const recipesCtrl = require('./controllers/recipes.js');
 const categoriesCtrl = require('./controllers/categories.js');
 const searchCtrl = require('./controllers/search.js');
-
-<<<<<<< HEAD
-const authMiddleware = require('./auth.js')
+const suggestionsCtrl = require('./controllers/suggestions.js');
 
 router.get('/sign-in', usersCtrl.login);
 router.post('/users', usersCtrl.createUser);
@@ -19,6 +17,8 @@ router.del('/me',usersCtrl.delUser);
 router.get('/recipes', recipesCtrl.getRecipes);
 router.post('/recipes', recipesCtrl.postRecipe);
 router.get('/recipes/:id', recipesCtrl.getSpecificRecipe);
+
+router.get('/suggestions', suggestionsCtrl.getSuggestions);
 
 router.get('/search/:id', searchCtrl.getSearchRecipes);
 
