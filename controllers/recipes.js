@@ -18,13 +18,11 @@ exports.getRecipes = function* (next) {
         recipes: recipes
       };
     } else {
-      console.log("Fetching recipes…");
       let recipes = yield axios.get('/recipes', {
         params: { q: '*'}
-      }).then(function(res){
+      }).then(function(res) {
         const matches = res.data.matches;
         for (let i = 0; i < 5; i++) {
-          console.log(matches[i]);
           let newRecipe = {
             id: matches[i].id,
             name: matches[i].recipeName,
@@ -41,7 +39,6 @@ exports.getRecipes = function* (next) {
       };
     }
   } catch (err) {
-    console.log(err);
     this.status = 401;
     this.body = err;
   }
@@ -49,18 +46,41 @@ exports.getRecipes = function* (next) {
 
 exports.getSpecificRecipe = function* (next) {
   this.type = 'json';
+  const id = this.params.id;
   try {
-    const id = this.params.id;
     const recipe = yield Recipe.findOne({_id: id})
       .populate('categories');
+    if (recipe._id) {
       this.status = 200;
       this.body = {
         recipe: recipe
       };
+    } else {
+      
+    }
   } catch (err) {
-    console.log('recipe not found');
-    this.status = 401;
-    this.body = err;
+    if (err.name === 'CastError') {
+      let recipes = yield axios.get(`/recipe/${id}?`)
+      .then(function(res) {
+        const recipe = res.data;
+          let newRecipe = {
+            id: id,
+            name: recipe.name,
+            image_url: recipe.images[0].hostedLargeUrl,
+            ingredients: recipe.ingredientLines,
+            time: recipe.totalTime,
+            url: recipe.source.sourceRecipeUrl
+          }
+        return newRecipe;
+      });
+      this.status = 200;
+      this.body = {
+        recipes: recipes
+      };
+    }else{
+      this.status = 401;
+      this.body = err;
+    }
   }
 };
 
@@ -101,6 +121,8 @@ exports.postRecipe = function* (next) {
     this.body = err;
   }
 };
+
+
 
 
 
