@@ -16,7 +16,7 @@ let allRecipes = function (url) {
   });
 }
 
-// allRecipes("http://allrecipes.com/recipe/17036/pumpkin-pancakes/");
+allRecipes("http://allrecipes.com/recipe/17036/pumpkin-pancakes/");
 
 let vicenzosPlate = function (url) {
   scrapeIt(url, {

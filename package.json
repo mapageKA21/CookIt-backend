@@ -19,11 +19,13 @@
   "homepage": "https://github.com/scruben/recipes-backend#readme",
   "dependencies": {
     "atob": "^2.0.3",
+    "axios": "^0.15.2",
     "bcrypt": "^0.8.7",
     "body-parser": "^1.15.2",
     "koa": "^1.2.4",
     "koa-bodyparser": "^2.3.0",
     "koa-cors": "0.0.16",
+    "koa-request": "^1.0.0",
     "koa-router": "^5.4.0",
     "mongoose": "^4.6.8",
     "mongoose-relationship": "^0.1.5",
