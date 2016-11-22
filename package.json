@@ -22,6 +22,7 @@
     "axios": "^0.15.2",
     "bcrypt": "^0.8.7",
     "body-parser": "^1.15.2",
+    "co-body": "^4.2.0",
     "koa": "^1.2.4",
     "koa-bodyparser": "^2.3.0",
     "koa-cors": "0.0.16",
