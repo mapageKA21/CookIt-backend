@@ -7,23 +7,20 @@ exports.getSuggestions = function* (next) {
   //  query of 3 ingredients
   this.type = 'json';
   let yummlyRecipes = [];
-
+  
   try {
-      let recipes = yield axios.get('/recipes', {
-        params: { 
-          q: `*`,
-          allowedIngredient: `${this.query.one}`,
-          allowedIngredient: `${this.query.two}`,
-          allowedIngredient: `${this.query.three}`
-        }
+      let recipes = yield axios.get('/search', {
+        params: { q: `${this.query.one},${this.query.two},${this.query.three}`}
       }).then(function(res) {
-        const matches = res.data.matches;
-        for (let i = 0; i < 3; i++) {
+        const matches = res.data.hits;
+        console.log(matches);
+        for (let i = 0; i < matches.length; i++) {
           let newRecipe = {
-            id: matches[i].id,
-            name: matches[i].recipeName,
-            image_url: matches[i].imageUrlsBySize['90'],
-            time: Math.ceil(matches[i].totalTimeInSeconds/60)
+            id: encodeURIComponent(matches[i].recipe.uri),
+            name: matches[i].recipe.label,
+            image_url: matches[i].recipe.image,
+            ingredients: matches[i].recipe.ingredientLines,
+            url: matches[i].recipe.url
           }
           yummlyRecipes.push(newRecipe);
         }

@@ -16,16 +16,17 @@ exports.getSearchRecipes = function* (next) {
         recipes: recipes
       };
     } else {
-      let recipes = yield axios.get('/recipes', {
+      let recipes = yield axios.get('/search', {
         params: { q: `${id}`}
       }).then(function(res) {
-        const matches = res.data.matches;
-        for (let i = 0; i < 5; i++) {
+        const matches = res.data.hits;
+        for (let i = 0; i < matches.length; i++) {
           let newRecipe = {
-            id: matches[i].id,
-            name: matches[i].recipeName,
-            image_url: matches[i].imageUrlsBySize['90'],
-            time: Math.ceil(matches[i].totalTimeInSeconds/60)
+            id: encodeURIComponent(matches[i].recipe.uri),
+            name: matches[i].recipe.label,
+            image_url: matches[i].recipe.image,
+            ingredients: matches[i].recipe.ingredientLines,
+            url: matches[i].recipe.url
           }
           yummlyRecipes.push(newRecipe);
         }

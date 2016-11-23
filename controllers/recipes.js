@@ -18,7 +18,7 @@ exports.getRecipes = function* (next) {
       };
     } else {
       let recipes = yield axios.get('/search', {
-        params: { q: 'mediterranean'}
+        params: { q: 'mediterranean, italian, greek'}
       }).then(function(res) {
         const matches = res.data.hits;
         for (let i = 0; i < matches.length; i++) {
